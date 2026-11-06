@@ -1,0 +1,11 @@
+{
+  "name": "enfoke-quiz-musical",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Un quiz musical de diez preguntas, hecho en JavaScript puro.",
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node --test tests/quiz.test.cjs"
+  },
+  "engines": { "node": ">=18" }
+}
