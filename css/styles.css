@@ -18,18 +18,18 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
+body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; }
 button { font: inherit; text-transform: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 h1, h2 { font-weight: inherit; }
 h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 button:focus-visible { outline: 4px solid #f5da42; outline-offset: 5px; }
 [hidden] { display: none !important; }
-.quiz-layout { width: min(1024px, 100%); }
+.quiz-layout { width: min(100vw, calc(100dvh * 16 / 9)); }
 
 .quiz {
   position: relative;
-  width: min(1024px, 100%);
-  aspect-ratio: 8 / 5;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   container-type: inline-size;
   isolation: isolate;
   overflow: hidden;
@@ -37,27 +37,26 @@ button:focus-visible { outline: 4px solid #f5da42; outline-offset: 5px; }
   box-shadow: 0 20px 70px #0006;
 }
 
-.screen-art { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; z-index: -1; }
+.screen-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; user-select: none; z-index: -1; }
 .quiz[data-screen="result"] .screen-art { object-fit: contain; }
 .screen { position: absolute; inset: 0; }
-.play-button { position: absolute; top: 62%; left: 35.859375%; width: 28.28125%; aspect-ratio: 362 / 96; min-height: 44px; padding: 0; border: 0; border-radius: 30px; background: transparent; transition: transform 150ms; }
+.play-button { position: absolute; top: 62%; left: 40.572917%; width: 18.854166%; aspect-ratio: 362 / 96; min-height: 44px; padding: 0; border: 0; border-radius: 30px; background: transparent; transition: transform 150ms; }
 .play-button img { display: block; width: 100%; height: auto; }
 .play-button:hover { transform: translateY(-2px); }
 .play-button:active { transform: translateY(1px); }
-.brand-tagline { position: absolute; top: 30.6%; left: 33%; width: 34%; margin: 0; text-align: center; font-size: 1.45cqw; line-height: 1.2; }
-.start-screen h1 { position: absolute; top: 45%; left: 23%; width: 54%; margin: 0; font-size: 2.6cqw; line-height: 1.25; text-align: center; }
 
-.answers { position: absolute; top: 23%; left: 17%; width: 66%; display: grid; gap: 1.1cqw; }
+.answers { position: absolute; top: 32%; left: 17%; width: 66%; display: grid; gap: .8cqw; }
 .answer-button {
   width: 100%;
-  min-height: 6.2cqw;
-  padding: 1.05cqw 2.3cqw;
+  min-height: 4.5cqw;
+  padding: .7cqw 1.8cqw;
   border-radius: 30px;
   border: 2px solid #ffffff30;
   background: #eeeeeb;
   color: #222220;
-  font-size: clamp(12px, 1.6cqw, 17px);
-  line-height: 1.3;
+  font-size: 20px;
+  line-height: 20px;
+  text-transform: none;
   text-align: left;
   font-weight: 600;
   transition: background 120ms, border-color 120ms, transform 120ms;
@@ -68,15 +67,16 @@ button:focus-visible { outline: 4px solid #f5da42; outline-offset: 5px; }
 .answer-button[aria-pressed="true"] { background: var(--orange); border-color: #fff; color: #fff; }
 .answer-button:disabled { cursor: default; }
 .question-navigation { position: absolute; bottom: 5.5%; left: 17%; width: 66%; display: flex; align-items: center; gap: 16px; }
-.text-button { flex-shrink: 0; background: transparent; border: 0; color: #fff; min-height: 44px; padding: 4px 0; font-size: clamp(14px, 1.6cqw, 17px); }
+.text-button { flex-shrink: 0; background: transparent; border: 0; color: #fff; min-height: 44px; padding: 4px 0; font-size: clamp(14px, 1.2cqw, 24px); }
 .text-button:hover { color: #f5da42; }
-.progress-label { margin-left: auto; white-space: nowrap; font-size: clamp(12px, 1.4cqw, 15px); }
+.progress-label { margin-left: auto; white-space: nowrap; font-size: clamp(12px, 1cqw, 22px); }
 .progress { width: 26%; height: 5px; border-radius: 10px; background: #ffffff35; overflow: hidden; }
 .progress span { height: 100%; display: block; background: #f5da42; transition: width 150ms; }
 
 .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.5cqw; text-align: center; }
 .loading-screen h2 { margin: 0; width: 65%; font-size: clamp(22px, 3cqw, 34px); }
 .loading-screen p { margin: 0; font-size: clamp(15px, 1.9cqw, 21px); }
+.loading-caption { text-transform: none; }
 .equalizer { height: 6cqw; display: flex; align-items: center; gap: .8cqw; }
 .equalizer span { display: block; width: 1cqw; height: 100%; border-radius: 10px; background: #ea562a; animation: groove 850ms ease-in-out infinite alternate; }
 .equalizer span:nth-child(2) { animation-delay: -400ms; background: #f5da42; }
@@ -85,27 +85,30 @@ button:focus-visible { outline: 4px solid #f5da42; outline-offset: 5px; }
 .equalizer span:nth-child(5) { animation-delay: -300ms; background: #379d56; }
 @keyframes groove { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
 
+/* The original result artwork places its 300 px square at (810, 527). */
+.band-card { position: absolute; left: 42.1875%; top: 48.796296%; width: 15.625%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 10%; background: transparent; }
+.band-card img { position: absolute; inset: 6%; width: 88%; height: 88%; object-fit: contain; border-radius: 10%; transition: opacity 600ms ease-in-out; pointer-events: none; }
+.band-photo { opacity: 1; }
+.band-qr { opacity: 0; }
+.band-card[data-view="qr"] .band-photo { opacity: 0; }
+.band-card[data-view="qr"] .band-qr { opacity: 1; }
+
 .noscript { position: absolute; bottom: 10%; left: 15%; width: 70%; text-align: center; background: #1d1d1b; padding: 16px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-@media (min-width: 600px) and (max-width: 800px) {
-  .answers { top: 20%; gap: .65cqw; }
-}
-
-/* In portrait, keep the same tablet canvas. Small phones get room to read. */
+/* Compact screens keep the alternatives readable in a scrollable area. */
 @media (max-width: 599px) {
   body { padding: 0; }
   .quiz { min-height: 100svh; aspect-ratio: auto; }
-  .quiz[data-screen="result"] { min-height: 0; aspect-ratio: 8 / 5; }
+  .quiz[data-screen="result"], .quiz[data-screen="final"] { min-height: 0; aspect-ratio: 16 / 9; }
+  .quiz[data-screen="final"] .screen-art { object-fit: contain; }
   .screen-art { object-fit: cover; }
   .quiz[data-screen="question"] .screen-art { height: auto; object-fit: contain; object-position: top; }
   .question-screen { padding: max(92px, 23cqw) 20px 28px; overflow-y: auto; }
   .answers { position: static; width: 100%; gap: 12px; }
-  .answer-button { min-height: 66px; padding: 15px 18px; font-size: 15px; }
+  .answer-button { min-height: 66px; padding: 15px 18px; }
   .question-navigation { position: static; width: 100%; margin-top: 20px; gap: 12px; }
   .play-button { left: 20%; width: 60%; top: 62%; }
-  .brand-tagline { top: 30.6%; font-size: 12px; }
-  .start-screen h1 { font-size: 22px; }
   .loading-screen { gap: 28px; }
   .loading-screen h2 { font-size: 28px; }
   .equalizer { height: 60px; gap: 8px; }

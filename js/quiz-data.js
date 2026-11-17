@@ -105,12 +105,17 @@
   ];
 
   const results = {
-    A: { name: 'Groovin Bohemia', image: 'a.svg' },
-    B: { name: 'Chokenbici', image: 'b.svg' },
-    C: { name: 'Suave Lomito', image: 'c.svg' },
-    D: { name: 'Cortito y Funky', image: 'd.svg' },
-    E: { name: 'Latelonius', image: 'e.svg' },
+    A: { name: 'Groovin Bohemia', image: 'a.svg', photo: 'groovin_bohemia_pic.svg', qr: 'groovin_bohemia_qrcode.svg' },
+    B: { name: 'Chokenbici', image: 'b.svg', photo: 'chokenbici_pic.svg', qr: 'chokenbici_qrcode.svg' },
+    C: { name: 'Suave Lomito', image: 'c.svg', photo: 'suave_lomito_pic.svg', qr: 'suave_lomito_qrcode.svg' },
+    D: { name: 'Cortito y Funky', image: 'd.svg', photo: 'coritoyfunky_pic.svg', qr: 'coritoyfunky_qrcode.svg' },
+    E: { name: 'Latelonius', image: 'e.svg', photo: 'latelonius_pic.svg', qr: 'latelonius_qrcode.svg' },
   };
+
+  function formatAnswer(text) {
+    return text.toLocaleLowerCase('es-AR').replace(/(^|[.!?])(\s*[“"'¿¡(\[]*)(\p{L})/gu,
+      (_, punctuation, spacing, letter) => punctuation + spacing + letter.toLocaleUpperCase('es-AR'));
+  }
 
   function calculateResult(answers, random = Math.random) {
     if (!Array.isArray(answers) || answers.length !== questions.length || answers.some(answer => !Object.hasOwn(results, answer))) {
@@ -123,7 +128,7 @@
     return winners.length === 1 ? winners[0] : winners[Math.floor(random() * winners.length)];
   }
 
-  const data = { questions, results, calculateResult };
+  const data = { questions, results, calculateResult, formatAnswer };
   if (typeof module !== 'undefined' && module.exports) module.exports = data;
   else root.MusicQuizData = data;
 })(typeof window !== 'undefined' ? window : globalThis);

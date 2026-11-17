@@ -5,7 +5,7 @@
   "description": "Un quiz musical de diez preguntas, hecho en JavaScript puro.",
   "scripts": {
     "start": "node scripts/serve.cjs",
-    "test": "node --test tests/quiz.test.cjs"
+    "test": "node --test"
   },
   "engines": { "node": ">=18" }
 }

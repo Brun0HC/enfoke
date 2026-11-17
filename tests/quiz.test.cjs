@@ -1,6 +1,12 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { questions, results, calculateResult } = require('../js/quiz-data.js');
+const { questions, results, calculateResult, formatAnswer } = require('../js/quiz-data.js');
+
+test('las alternativas usan mayúscula inicial y después de puntos, incluso entre comillas', () => {
+  assert.equal(formatAnswer('“SI NO SE BAILA, NO ES FIESTA.”'), '“Si no se baila, no es fiesta.”');
+  assert.equal(formatAnswer('UN PLAN. OTRA IDEA. ¿QUÉ ELEGÍS? ALGO MÁS.'), 'Un plan. Otra idea. ¿Qué elegís? Algo más.');
+  assert.equal(formatAnswer('ALGODÓN, MADERA Y LUZ LED.'), 'Algodón, madera y luz led.');
+});
 
 test('el test tiene diez preguntas y cinco opciones en cada una', () => {
   assert.equal(questions.length, 10);
