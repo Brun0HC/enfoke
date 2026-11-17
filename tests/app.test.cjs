@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const data = require('../js/quiz-data.js');
 
 // Exercise the complete UI controller with a controllable clock and image loads.
-function createQuiz({ pendingImages = [], reducedMotion = false } = {}) {
+function createQuiz({ pendingImages = [], reducedMotion = false, imageVersions } = {}) {
   let now = 0;
   let nextId = 0;
   const timers = new Map();
@@ -44,7 +44,7 @@ function createQuiz({ pendingImages = [], reducedMotion = false } = {}) {
   document.getElementById('start-screen').hidden = false;
   class MockImage {
     decode() {
-      const name = decodeURIComponent(this.src.split('/').pop());
+      const name = decodeURIComponent(this.src.split('/').pop().split('?')[0]);
       if (!pendingImages.includes(name)) return Promise.resolve();
       return new Promise(resolve => deferred.set(name, resolve));
     }
@@ -52,7 +52,7 @@ function createQuiz({ pendingImages = [], reducedMotion = false } = {}) {
   class ClockDate extends Date { static now() { return now; } }
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8'), {
     document,
-    window: { MusicQuizData: data, matchMedia: () => ({ matches: reducedMotion }) },
+    window: { MusicQuizData: data, MusicQuizImageVersions: imageVersions, matchMedia: () => ({ matches: reducedMotion }) },
     Image: MockImage,
     Date: ClockDate,
     setTimeout(callback, delay) {
@@ -105,6 +105,12 @@ function createQuiz({ pendingImages = [], reducedMotion = false } = {}) {
     document,
   };
 }
+
+test('las imágenes dinámicas usan la versión del contenido cuando está disponible', async () => {
+  const app = createQuiz({ imageVersions: { 'Pregunta 1.svg': '0123456789abcdef' } });
+  await app.start();
+  assert.equal(app.element('screen-art').src, 'imagens/Pregunta%201.svg?v=0123456789abcdef');
+});
 
 test('60 segundos sin interacción reinician una pregunta y limpian las respuestas', async () => {
   const app = createQuiz();

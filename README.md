@@ -53,7 +53,27 @@ La presentación está preparada para computadoras en formato **16:9**, usando l
 - `js/quiz-data.js`: preguntas, resultados y cálculo por mayoría.
 - `js/app.js`: navegación, selección y carga de las ilustraciones.
 - `imagens/`: los SVG originales, conservados sin modificaciones. El inicio, las diez preguntas, las cinco respuestas y el botón PLAY se usan directamente desde esta carpeta.
-- `assets/`: archivos generados y fuente local. El sitio usa la copia optimizada de la pantalla de carga; el inicio se toma de la ilustración original de escritorio.
+- `assets/`: archivos generados y fuente local. Las imágenes del sitio se toman de los SVG originales de `imagens/`.
+
+## Caché de imágenes y Vercel
+
+Las imágenes usan una URL con una versión calculada a partir de su contenido, por ejemplo `imagens/a.svg?v=0123456789abcdef`. La URL se mantiene mientras la imagen no cambie. Así, fondos, fotos, QR y botón PLAY pueden reutilizarse desde el caché del navegador sin modificar ningún SVG.
+
+- Las imágenes versionadas usan `Cache-Control: public, max-age=31536000, immutable`: pueden conservarse hasta un año, según el espacio y las políticas del navegador.
+- HTML, CSS y JavaScript se revalidan para recibir los cambios del próximo despliegue. El archivo de versiones también se revalida.
+- Cuando cambia una imagen, se genera otra versión y el navegador solicita la URL nueva. No hace falta pedirle a la gente que borre el caché.
+- El servidor local también envía `ETag` y `Last-Modified`, y responde `304` sin transferir de nuevo el archivo si no cambió.
+- El precargado de la próxima pregunta se conserva y usa exactamente las mismas URLs que las imágenes visibles.
+
+`vercel.json` ya define **Framework: Other**, **Build Command: npm run build** y **Output Directory: .**. El build únicamente calcula versiones y actualiza sus referencias; no instala dependencias ni convierte imágenes. Hacé un nuevo deploy para aplicar estos encabezados en Vercel. Esta configuración reemplaza la publicación anterior sin build.
+
+```sh
+npm run build
+```
+
+El comando genera `js/image-versions.js` y actualiza las URLs de las imágenes iniciales de `index.html`. No edites esas versiones a mano. `npm start` también las actualiza al iniciar; después de cambiar imágenes durante el desarrollo, reiniciá el servidor. Abrir `index.html` como archivo sigue funcionando, pero el caché HTTP requiere servir el sitio por HTTP/HTTPS.
+
+El caché mejora las visitas siguientes y la reutilización de imágenes. **No reduce el primer download**: los fondos originales siguen pesando aproximadamente 25 MB cada uno. Tampoco descarga anticipadamente los 463 MB de la carpeta completa ni agrega funcionamiento sin conexión.
 
 Para regenerar las imágenes optimizadas en Windows:
 
@@ -67,4 +87,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/optimize-assets.ps1
 npm test
 ```
 
-Las pruebas verifican los cinco resultados, mayorías y empates, formato de las alternativas, inactividad global, secuencia foto/QR/final, clics anticipados y cargas que terminan después de un reinicio. Los tiempos se comprueban con un reloj controlado. No hace falta ejecutar `npm install`.
+Las pruebas verifican los cinco resultados, mayorías y empates, formato de las alternativas, inactividad global, secuencia foto/QR/final, clics anticipados y cargas que terminan después de un reinicio. También verifican las versiones por contenido, la conservación de los SVG, encabezados HTTP y respuestas `304`. Los tiempos se comprueban con un reloj controlado. No hace falta ejecutar `npm install`.

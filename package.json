@@ -4,6 +4,7 @@
   "private": true,
   "description": "Un quiz musical de diez preguntas, hecho en JavaScript puro.",
   "scripts": {
+    "build": "node scripts/generate-image-cache.cjs",
     "start": "node scripts/serve.cjs",
     "test": "node --test"
   },

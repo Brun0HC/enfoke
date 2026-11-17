@@ -26,7 +26,10 @@
   let activeResult = null;
   let qrVisible = false;
 
-  const imagePath = name => `imagens/${encodeURIComponent(name)}`;
+  const imagePath = name => {
+    const version = window.MusicQuizImageVersions?.[name];
+    return `imagens/${encodeURIComponent(name)}${version ? `?v=${version}` : ''}`;
+  };
   const pause = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
   const isCurrent = (currentRun, expectedPhase) => currentRun === run && phase === expectedPhase;
 
