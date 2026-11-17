@@ -32,6 +32,7 @@ npm.cmd start
 - Después de la décima pregunta aparece Calculando.svg con una animación durante 2,5 segundos y el texto «Banca un toke». Si las imágenes del resultado todavía no cargaron, espera hasta tenerlas listas.
 - Gana la opción que más veces elegiste, aunque no supere cinco votos. Si hay empate, se sortea entre las opciones con el puntaje más alto.
 - El plazo de **60 segundos sin interacción es global**: funciona en las preguntas, la carga, el resultado y la pantalla final. Un clic, una tecla o el desplazamiento lo renuevan; las transiciones automáticas no. Al vencer, vuelve al inicio, cancela las transiciones pendientes y borra las respuestas. Una carga tardía no reabre la partida anterior.
+- Un aviso discreto dentro de la esquina superior derecha de la imagen del quiz muestra «Sin actividad, volvés al inicio en» y los segundos restantes. Acompaña el tamaño del quiz, incluso cuando quedan márgenes alrededor. Se resalta en los últimos diez segundos, se renueva con la interacción y se oculta al volver al inicio. Usa el mismo plazo global y no anuncia cada segundo a los lectores de pantalla.
 - No se guardan datos ni se requieren servicios externos.
 
 | Opción interna | Resultado | Pantalla |

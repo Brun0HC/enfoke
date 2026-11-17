@@ -25,6 +25,11 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus { outline: none; }
 button:focus-visible { outline: 4px solid #f5da42; outline-offset: 5px; }
 [hidden] { display: none !important; }
 .quiz-layout { width: min(100vw, calc(100dvh * 16 / 9)); }
+.afk-notice { position: absolute; top: 16px; right: 16px; z-index: 10; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); padding: 9px 12px; border: 1px solid #ffffff24; border-radius: 12px; background: #1d1d1be8; color: #e5e5e2; text-transform: none; pointer-events: none; }
+.afk-copy { font-size: 11px; line-height: 15px; }
+.afk-countdown { flex-shrink: 0; min-width: 45px; color: #fff; font-size: 15px; line-height: 20px; font-variant-numeric: tabular-nums; text-align: right; }
+.afk-notice[data-urgent="true"] { border-color: #ea562a; }
+.afk-notice[data-urgent="true"] .afk-countdown { color: #f5da42; }
 
 .quiz {
   position: relative;

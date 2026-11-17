@@ -112,6 +112,41 @@ test('las imágenes dinámicas usan la versión del contenido cuando está dispo
   assert.equal(app.element('screen-art').src, 'imagens/Pregunta%201.svg?v=0123456789abcdef');
 });
 
+test('el aviso de inactividad cuenta los segundos, resalta los últimos diez y se renueva al interactuar', async () => {
+  const app = createQuiz();
+  const notice = app.element('afk-notice');
+  const countdown = app.element('afk-countdown');
+  assert.equal(notice.hidden, true);
+  await app.start();
+  assert.equal(notice.hidden, false);
+  assert.equal(countdown.textContent, '01:00');
+  await app.tick(1000);
+  assert.equal(countdown.textContent, '00:59');
+  await app.tick(49_000);
+  assert.equal(countdown.textContent, '00:10');
+  assert.equal(notice.dataset.urgent, 'true');
+  app.dispatch('pointerdown');
+  assert.equal(countdown.textContent, '01:00');
+  assert.equal(notice.dataset.urgent, 'false');
+  await app.tick(60_000);
+  assert.equal(app.phase(), 'start');
+  assert.equal(notice.hidden, true);
+  assert.equal(app.timerCount(), 0);
+});
+
+test('el contador visible continúa durante foto, QR y pantalla final sin renovar el plazo', async () => {
+  const app = createQuiz();
+  await app.finish();
+  assert.equal(app.element('afk-countdown').textContent, '00:58');
+  await app.tick(5000);
+  assert.equal(app.element('band-card').dataset.view, 'qr');
+  assert.equal(app.element('afk-countdown').textContent, '00:53');
+  await app.tick(600 + 30_000);
+  assert.equal(app.phase(), 'final');
+  assert.equal(app.element('afk-countdown').textContent, '00:22');
+  assert.equal(app.element('afk-notice').hidden, false);
+});
+
 test('60 segundos sin interacción reinician una pregunta y limpian las respuestas', async () => {
   const app = createQuiz();
   await app.start();

@@ -8,6 +8,8 @@
   const answersContainer = document.getElementById('answers');
   const questionTitle = document.getElementById('question-title');
   const announcement = document.getElementById('announcement');
+  const afkNotice = document.getElementById('afk-notice');
+  const afkCountdown = document.getElementById('afk-countdown');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const bandCard = document.getElementById('band-card');
   const bandPhoto = document.getElementById('band-photo');
@@ -19,6 +21,7 @@
   let phase = 'start';
   let run = 0;
   let inactivityTimer = null;
+  let inactivityDisplayTimer = null;
   let inactivityDeadline = 0;
   let photoTimer = null;
   let fadeTimer = null;
@@ -46,6 +49,23 @@
       if (Date.now() >= inactivityDeadline) resetQuiz();
       else armInactivityTimer();
     }, Math.max(0, inactivityDeadline - Date.now()));
+    updateInactivityNotice();
+  }
+
+  function updateInactivityNotice() {
+    clearTimeout(inactivityDisplayTimer);
+    inactivityDisplayTimer = null;
+    afkNotice.hidden = phase === 'start' || inactivityDeadline === 0;
+    if (afkNotice.hidden) return;
+    const remainingMilliseconds = Math.max(0, inactivityDeadline - Date.now());
+    const seconds = Math.ceil(remainingMilliseconds / 1000);
+    afkCountdown.textContent = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+    afkNotice.dataset.urgent = String(seconds <= 10);
+    if (remainingMilliseconds > 0) {
+      // Align with the existing deadline, including after screen transitions or
+      // a suspended tab. This display never extends the inactivity timeout.
+      inactivityDisplayTimer = setTimeout(updateInactivityNotice, remainingMilliseconds % 1000 || 1000);
+    }
   }
 
   function recordInteraction() {
@@ -69,6 +89,7 @@
     document.getElementById('quiz').dataset.screen = name;
     art.src = imagePath(artwork);
     screens.forEach(screen => { document.getElementById(`${screen}-screen`).hidden = screen !== name; });
+    updateInactivityNotice();
   }
 
   function showQuestion() {
