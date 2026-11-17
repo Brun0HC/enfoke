@@ -26,7 +26,7 @@
   let activeResult = null;
   let qrVisible = false;
 
-  const imagePath = name => `${name === 'Calculando.svg' ? 'assets' : 'imagens'}/${encodeURIComponent(name)}`;
+  const imagePath = name => `imagens/${encodeURIComponent(name)}`;
   const pause = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
   const isCurrent = (currentRun, expectedPhase) => currentRun === run && phase === expectedPhase;
 
